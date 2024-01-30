@@ -4,6 +4,11 @@ variable "namespace" {
   default     = "external-secrets"
 }
 
+variable "namespace_argocd" {
+  type        = string
+  description = "Namespace to deploy argocd"
+  default     = "argocd"
+}
 variable "db_user" {
   type        = string
   description = "DB user"
