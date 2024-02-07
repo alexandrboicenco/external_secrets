@@ -27,9 +27,9 @@ spec:
         ports:
         - containerPort: 80
           name: wordpress 
-        # envFrom:
-        # - secretRef:
-        #     name: wp-credentials
+        envFrom:
+        - secretRef:
+            name: wp-credentials
         volumeMounts:
         - name: wordpress-persistent-storage
           mountPath: /var/www/html
@@ -37,36 +37,36 @@ spec:
       - name: wordpress-persistent-storage
         persistentVolumeClaim:
           claimName: wp-pv-claim
-# ---
-# apiVersion: external-secrets.io/v1beta1
-# kind: ExternalSecret
-# metadata:
-#   name: wp-credentials
-#   namespace: stg
-# spec:
-#   refreshInterval: 1m
-#   secretStoreRef:
-#     kind: ClusterSecretStore
-#     name: secret-store
-#   target:
-#     name: wp-credentials
-#     creationPolicy: Owner
-#   data:
-#   - secretKey: WORDPRESS_DB_USER
-#     remoteRef:
-#       key: db-credentials
-#       version: AWSCURRENT
-#       property: USER
-#   - secretKey: WORDPRESS_DB_PASSWORD
-#     remoteRef:
-#       key: db-credentials
-#       version: AWSCURRENT
-#       property: PASSWORD
-#   - secretKey: WORDPRESS_DB_HOST
-#     remoteRef:
-#       key: db-credentials
-#       version: AWSCURRENT
-#       property: HOST
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: wp-credentials
+  namespace: stg
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: secret-store
+  target:
+    name: wp-credentials
+    creationPolicy: Owner
+  data:
+  - secretKey: WORDPRESS_DB_USER
+    remoteRef:
+      key: db-credentials
+      version: AWSCURRENT
+      property: USER
+  - secretKey: WORDPRESS_DB_PASSWORD
+    remoteRef:
+      key: db-credentials
+      version: AWSCURRENT
+      property: PASSWORD
+  - secretKey: WORDPRESS_DB_HOST
+    remoteRef:
+      key: db-credentials
+      version: AWSCURRENT
+      property: HOST
 ---
 apiVersion: v1
 kind: Service
