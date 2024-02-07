@@ -67,6 +67,11 @@ spec:
       key: db-credentials
       version: AWSCURRENT
       property: HOST
+  - secretKey: NEW_PASS_FOR_TEST
+    remoteRef:
+      key: db-credentials
+      version: AWSCURRENT
+      property: NEW_PASS
 ---
 apiVersion: v1
 kind: Service
