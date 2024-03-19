@@ -1,12 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
   name: wordpress-mysql
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: git@github.com:alexandrboicenco/external_secrets.git
+    repoURL: https://github.com/alexandrboicenco/external_secrets.git
     path: K8S/DB/
     targetRevision: HEAD
   destination:

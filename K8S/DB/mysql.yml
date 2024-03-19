@@ -21,12 +21,21 @@ spec:
       containers:
       - image: mysql:8.0
         name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: pass
+        - name: MYSQL_DATABASE
+          value: wordpress
+        - name: MYSQL_USER
+          value: wordpress
+        - name: MYSQL_PASSWORD
+          value: pass
         ports:
         - containerPort: 3306
           name: mysql
-        envFrom:
-        - secretRef:
-            name: msql-credentials
+        # envFrom:
+        # - secretRef:
+        #     name: msql-credentials
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
@@ -34,41 +43,41 @@ spec:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claim
----
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: db-credentials
-  namespace: stg
-spec:
-  refreshInterval: 1m
-  secretStoreRef:
-    kind: ClusterSecretStore
-    name: secret-store
-  target:
-    name: msql-credentials
-    creationPolicy: Owner
-  data:
-  - secretKey: MYSQL_ROOT_PASSWORD
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: MYSQL_ROOT_PASSWORD
-  - secretKey: MYSQL_DATABASE
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: DB_NAME
-  - secretKey: MYSQL_USER
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: USER
-  - secretKey: MYSQL_PASSWORD
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: PASSWORD
+# ---
+# apiVersion: external-secrets.io/v1beta1
+# kind: ExternalSecret
+# metadata:
+#   name: db-credentials
+#   namespace: stg
+# spec:
+#   refreshInterval: 1m
+#   secretStoreRef:
+#     kind: ClusterSecretStore
+#     name: secret-store
+#   target:
+#     name: msql-credentials
+#     creationPolicy: Owner
+#   data:
+#   - secretKey: MYSQL_ROOT_PASSWORD
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: MYSQL_ROOT_PASSWORD
+#   - secretKey: MYSQL_DATABASE
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: DB_NAME
+#   - secretKey: MYSQL_USER
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: USER
+#   - secretKey: MYSQL_PASSWORD
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: PASSWORD
 ---
 apiVersion: v1
 kind: Service

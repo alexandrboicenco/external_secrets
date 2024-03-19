@@ -24,12 +24,20 @@ spec:
       containers:
       - image: wordpress:6.2.1-apache
         name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: wordpress-mysql
+        - name: WORDPRESS_DB_PASSWORD
+          value: pass
+        - name: WORDPRESS_DB_USER
+          value: wordpress
         ports:
         - containerPort: 80
           name: wordpress 
-        envFrom:
-        - secretRef:
-            name: wp-credentials
+        # envFrom:
+        # - secretRef:
+        #     name: wp-credentials
+        
         volumeMounts:
         - name: wordpress-persistent-storage
           mountPath: /var/www/html
@@ -38,41 +46,41 @@ spec:
         persistentVolumeClaim:
           claimName: wp-pv-claim
 ---
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: wp-credentials
-  namespace: stg
-spec:
-  refreshInterval: 1m
-  secretStoreRef:
-    kind: ClusterSecretStore
-    name: secret-store
-  target:
-    name: wp-credentials
-    creationPolicy: Owner
-  data:
-  - secretKey: WORDPRESS_DB_USER
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: USER
-  - secretKey: WORDPRESS_DB_PASSWORD
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: PASSWORD
-  - secretKey: WORDPRESS_DB_HOST
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: HOST
-  - secretKey: NEW_PASS_FOR_TEST
-    remoteRef:
-      key: db-credentials
-      version: AWSCURRENT
-      property: NEW_PASS
----
+# apiVersion: external-secrets.io/v1beta1
+# kind: ExternalSecret
+# metadata:
+#   name: wp-credentials
+#   namespace: stg
+# spec:
+#   refreshInterval: 1m
+#   secretStoreRef:
+#     kind: ClusterSecretStore
+#     name: secret-store
+#   target:
+#     name: wp-credentials
+#     creationPolicy: Owner
+#   data:
+#   - secretKey: WORDPRESS_DB_USER
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: USER
+#   - secretKey: WORDPRESS_DB_PASSWORD
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: PASSWORD
+#   - secretKey: WORDPRESS_DB_HOST
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: HOST
+#   - secretKey: NEW_PASS_FOR_TEST
+#     remoteRef:
+#       key: db-credentials
+#       version: AWSCURRENT
+#       property: NEW_PASS
+# ---
 apiVersion: v1
 kind: Service
 metadata:
